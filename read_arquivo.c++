@@ -12,6 +12,7 @@ class read_arquivo{
         int n_jobs;
         int n_servidores;
         int custo_fixo;
+        vector<int> capacidade_servidores;
         vector<vector<int>> t_proces_job;
         vector<vector<int>> custo_job;
 
@@ -28,8 +29,28 @@ class read_arquivo{
                 // atualiza o tamanho da matriz t process job para o tamanho n_jobs x n_servidores
                 this->t_proces_job.resize(this->n_servidores, vector<int>(this->n_jobs));
                 this->custo_job.resize(this->n_servidores, vector<int>(this->n_jobs));
+                this->capacidade_servidores.resize(this->n_servidores);
 
                 getline(arquivo, linha); // pega a linha em branco
+
+                // leitura do vetor de capacidade dos servidores
+                getline(arquivo, linha);
+                string aux = "";
+                int pos_servidor = 0;
+                for (int c=0; c < int(linha.size()); c++){
+                    if (linha[c] == ' '){
+                        this->capacidade_servidores[pos_servidor] = stoi(aux);
+                        pos_servidor++;
+                        aux = "";
+                    }
+                    else{
+                        aux += linha[c];
+                    }
+                }
+                this->capacidade_servidores[pos_servidor] = stoi(aux);
+
+                getline(arquivo, linha); // pega a linha em branco
+                
                 // leitura da matriz de tempo de processamento
                 for (int i = 0; i < this->n_servidores; i++){
                     getline(arquivo, linha);
@@ -78,6 +99,10 @@ class read_arquivo{
             return this->n_servidores;
         }
 
+        int get_capacidade_servidores(int i){
+            return this->capacidade_servidores[i];
+        }
+
         int get_custo_fixo(){
             return this->custo_fixo;
         }
@@ -98,16 +123,22 @@ class read_arquivo{
 
 int main(){
     read_arquivo r("entrada.txt");
+
+    for (int i = 0; i < int(r.get_n_servidores()); i++){
+        cout << "Capacidade Sevidor " << i << " : " << r.get_capacidade_servidores(i) << endl;
+    }
+
+
     for (int i = 0; i < int(r.get_n_servidores()); i++){
         for (int j = 0; j < int(r.get_n_jobs()); j++){
-            cout << r.get_t_proces_job()[i][j] << " ";
+            cout << "Tempo Job " << j << " no servidor " << i << " : "<< r.get_t_proces_job()[i][j] << endl;
         }
         cout << endl;
     }
 
     for (int i = 0; i < int(r.get_n_servidores()); i++){
         for (int j = 0; j < int(r.get_n_jobs()); j++){
-            cout << r.get_custo_job()[i][j] << " ";
+            cout << "Custo Job " << j << " no servidor " << i << " : " << r.get_custo_job()[i][j] << endl;
         }
         cout << endl;
     }

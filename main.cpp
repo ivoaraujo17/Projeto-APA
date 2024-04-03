@@ -1,12 +1,14 @@
 #include <iostream>
 #include <vector>
 #include "read_arquivo.h"
+#include "a_guloso.h"
 
 
 int main(){
     Read_Arquivo dados("entrada.txt");
-
-    for (int i = 0; i < int(dados.get_n_servidores()); i++){
+    A_Guloso guloso(&dados);
+    guloso.executar();
+    /*for (int i = 0; i < int(dados.get_n_servidores()); i++){
         cout << "Capacidade Sevidor " << i << " : " << dados.get_capacidade_servidores(i) << endl;
     }
 
@@ -23,7 +25,8 @@ int main(){
             cout << "Custo Job " << j << " no servidor " << i << " : " << dados.get_custo_job()[i][j] << endl;
         }
         cout << endl;
-    }
+    }*/
+
     return 0;
 
 }

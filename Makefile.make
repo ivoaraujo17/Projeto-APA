@@ -1,9 +1,9 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -g3
 TARGET = output/main.exe
-SRCS = main.cpp read_arquivo.cpp
+SRCS = main.cpp read_arquivo.cpp a_guloso.cpp
 OBJS = $(SRCS:.cpp=.o)
-DEPS = read_arquivo.h
+DEPS = read_arquivo.h a_guloso.h
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^

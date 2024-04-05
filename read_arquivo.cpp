@@ -88,7 +88,7 @@ int Read_Arquivo::get_n_servidores(){
     return this->n_servidores;
 }
 
-int Read_Arquivo::get_capacidade_servidores(int i){
+int Read_Arquivo::get_capacidade_servidor(int i){
     return this->capacidade_servidores[i];
 }
 
@@ -96,12 +96,22 @@ int Read_Arquivo::get_custo_fixo(){
     return this->custo_fixo;
 }
 
-vector<vector<int>> Read_Arquivo::get_t_proces_job(){
-    return this->t_proces_job;
+int Read_Arquivo::get_tempo_job_servidor(int job, int servidor){
+    return this->t_proces_job[servidor][job];
 }
 
-vector<vector<int>> Read_Arquivo::get_custo_job(){
-    return this->custo_job;
+int Read_Arquivo::get_custo_job_servidor(int job, int servidor){
+    return this->custo_job[servidor][job];
+}
+
+vector<vector<int>> Read_Arquivo::get_tempo_job(int job){
+    // complexidade O(s)
+    vector<vector<int>> tempo_job(get_n_servidores(), vector<int>(2));
+    for (int s =0; s < this->get_n_servidores(); s++){
+        tempo_job[s][0] = this->t_proces_job[s][job];
+        tempo_job[s][1] = s;
+    }
+    return tempo_job;
 }
 
 Read_Arquivo::~Read_Arquivo(){

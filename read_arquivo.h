@@ -22,10 +22,11 @@ public:
     Read_Arquivo(string nome_arquivo);
     int get_n_jobs();
     int get_n_servidores();
-    int get_capacidade_servidores(int i);
+    int get_capacidade_servidor(int i);
     int get_custo_fixo();
-    vector<vector<int>> get_t_proces_job();
-    vector<vector<int>> get_custo_job();
+    int get_tempo_job_servidor(int job, int servidor);
+    int get_custo_job_servidor(int job, int servidor);
+    vector<vector<int>> get_tempo_job(int job);
     ~Read_Arquivo();
 };
 

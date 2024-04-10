@@ -7,6 +7,13 @@
 
 using namespace std;
 
+struct job{
+    int id;
+    int tempo;
+    int custo;
+    int servidor;
+};
+
 class Read_Arquivo {
 private:
     ifstream arquivo;
@@ -14,8 +21,7 @@ private:
     int n_jobs;
     int n_servidores;
     int custo_fixo;
-    vector<vector<int>> t_proces_job;
-    vector<vector<int>> custo_job;
+    vector<vector<job>> jobs;
     vector<int> capacidade_servidores;
 
 public:
@@ -26,7 +32,8 @@ public:
     int get_custo_fixo();
     int get_tempo_job_servidor(int job, int servidor);
     int get_custo_job_servidor(int job, int servidor);
-    vector<vector<int>> get_tempo_job(int job);
+    vector<job> get_info_job(int id_job);
+    void print_matriz();
     ~Read_Arquivo();
 };
 

@@ -12,7 +12,7 @@ class A_Guloso {
     private:
         Read_Arquivo* dados;
     public:
-        vector<vector<vector<int>>> tempo_job_ordenado;
+        vector<vector<job>> jobs_ordenados;
         vector<int> c_s_ocupada;
         vector<int> alocacao;
         A_Guloso(Read_Arquivo* dados);

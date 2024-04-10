@@ -15,9 +15,8 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
         this->n_servidores = stoi(linha);
         getline(arquivo, linha);
         this->custo_fixo = stoi(linha);
-        // atualiza o tamanho da matriz t process job para o tamanho n_jobs x n_servidores
-        this->t_proces_job.resize(this->n_servidores, vector<int>(this->n_jobs));
-        this->custo_job.resize(this->n_servidores, vector<int>(this->n_jobs));
+        // atualiza o tamanho da matriz jobs para o tamanho n_servidores x n_jobs
+        this->jobs.resize(this->n_servidores, vector<job>(this->n_jobs));
         this->capacidade_servidores.resize(this->n_servidores);
 
         getline(arquivo, linha); // pega a linha em branco
@@ -47,7 +46,9 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
             int coluna = 0;
             for (int c=0; c < int(linha.size()); c++){
                 if (linha[c] == ' '){
-                    this->t_proces_job[i][coluna] = stoi(aux);
+                    this->jobs[i][coluna].tempo = stoi(aux);
+                    this->jobs[i][coluna].servidor = i;
+                    this->jobs[i][coluna].id = coluna;
                     coluna++;
                     aux = "";
                 }
@@ -55,7 +56,9 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
                     aux += linha[c];
                 }
             }
-            this->t_proces_job[i][coluna] = stoi(aux); 
+            this->jobs[i][coluna].tempo = stoi(aux); 
+            this->jobs[i][coluna].servidor = i;
+            this->jobs[i][coluna].id = coluna;
         }
 
         getline(arquivo, linha); // pega a linha em branco
@@ -67,7 +70,7 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
             int coluna = 0;
             for (int c=0; c < int(linha.size()); c++){
                 if (linha[c] == ' '){
-                    this->custo_job[i][coluna] = stoi(aux);
+                    this->jobs[i][coluna].custo = stoi(aux);
                     coluna++;
                     aux = "";
                 }
@@ -75,7 +78,7 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
                     aux += linha[c];
                 }
             }
-            this->custo_job[i][coluna] = stoi(aux);
+            this->jobs[i][coluna].custo = stoi(aux);
         }
     }
 }
@@ -97,21 +100,31 @@ int Read_Arquivo::get_custo_fixo(){
 }
 
 int Read_Arquivo::get_tempo_job_servidor(int job, int servidor){
-    return this->t_proces_job[servidor][job];
+    return this->jobs[servidor][job].tempo;
 }
 
 int Read_Arquivo::get_custo_job_servidor(int job, int servidor){
-    return this->custo_job[servidor][job];
+    return this->jobs[servidor][job].custo;
 }
 
-vector<vector<int>> Read_Arquivo::get_tempo_job(int job){
+vector<job> Read_Arquivo::get_info_job(int n_job){
     // complexidade O(s)
-    vector<vector<int>> tempo_job(get_n_servidores(), vector<int>(2));
+    vector<job> info_job(get_n_servidores());
     for (int s =0; s < this->get_n_servidores(); s++){
-        tempo_job[s][0] = this->t_proces_job[s][job];
-        tempo_job[s][1] = s;
+        info_job[s] = this->jobs[s][n_job];
     }
-    return tempo_job;
+    return info_job;
+}
+
+void Read_Arquivo::print_matriz(){
+    for (int s = 0; s < this->n_servidores; s++){
+        for (int j = 0; j < this->n_jobs; j++){
+            cout << "Servidor: " << jobs[s][j].servidor << " ";
+            cout << "Job: " << jobs[s][j].id << " ";
+            cout << "Tempo: " << jobs[s][j].tempo << " ";
+            cout << "Custo: " << jobs[s][j].custo << endl;
+        }
+    }
 }
 
 Read_Arquivo::~Read_Arquivo(){

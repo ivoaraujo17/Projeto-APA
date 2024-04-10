@@ -39,19 +39,29 @@ void A_Guloso::executar(){
             }
         }
     }
-    
+    // Verifica se algum job não foi alocado
+    int custo_fixo = dados->get_custo_fixo();
     for (int j = 0; j < n_jobs; j++){
+        if (this->solucao.alocacao[j] == -1){
+            this->solucao.custo += custo_fixo;
+        }
+    }
+    //this->print_guloso();
+}
+
+void A_Guloso::print_guloso(){
+    for (int j = 0; j < this->dados->get_n_jobs(); j++){
         cout << "job " << j << " alocado no servidor " << solucao.alocacao[j] << endl;
     }
     
-    for (int s = 0; s < n_servidores; s++){
+    for (int s = 0; s < this->dados->get_n_servidores(); s++){
         cout << "servidor " << s << " ocupado: " << solucao.ocupacao[s];
         cout << " total: " << dados->get_capacidade_servidor(s) << endl;
     }
 
-    for (int j = 0; j < n_jobs; j++){
+    for (int j = 0; j < this->dados->get_n_jobs(); j++){
         cout << "job " << j << " tempos: ";
-        for (int s = 0; s < n_servidores; s++){
+        for (int s = 0; s < this->dados->get_n_servidores(); s++){
             cout << jobs_ordenados[j][s].tempo << " " << jobs_ordenados[j][s].servidor << " | ";
         }
         cout << endl;

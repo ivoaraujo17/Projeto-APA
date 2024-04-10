@@ -17,6 +17,7 @@ class A_Guloso {
         Solucao solucao;
         A_Guloso(Read_Arquivo* dados);
         void executar();
+        void print_guloso();
 };
 
 

@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include "read_arquivo.h"
+#include "solucao.h"
 
 using namespace std;
 
@@ -13,8 +14,7 @@ class A_Guloso {
         Read_Arquivo* dados;
     public:
         vector<vector<job>> jobs_ordenados;
-        vector<int> c_s_ocupada;
-        vector<int> alocacao;
+        Solucao solucao;
         A_Guloso(Read_Arquivo* dados);
         void executar();
 };

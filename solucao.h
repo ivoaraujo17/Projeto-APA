@@ -14,7 +14,7 @@ class Solucao{
 
         Solucao();
         Solucao(int n_jobs, int n_servidores);
-
+        void print_solucao();
 };
 
 #endif

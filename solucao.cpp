@@ -15,3 +15,12 @@ Solucao::Solucao(int n_jobs, int n_servidores) {
     this->ocupacao = vector<int>(n_servidores, 0);
     this->custo = 0;
 }
+
+void Solucao::print_solucao(){
+    cout << "Custo: " << this->custo << endl;
+    cout << "Alocacao: ";
+    for (int i = 0; i < int(this->alocacao.size()); i++){
+        cout << this->alocacao[i] << " ";
+    }
+    cout << endl;
+}

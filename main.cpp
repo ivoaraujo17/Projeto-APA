@@ -7,6 +7,21 @@
 
 
 int main(){
+
+    /*
+    Read_Arquivo entrada("entrada.txt");
+    entrada.print_matriz();
+    A_Guloso guloso(&entrada);
+    guloso.executar();
+    guloso.solucao.print_solucao();
+
+    VND vnd(&guloso.solucao, &entrada, &guloso.jobs_ordenados);
+    Solucao nova =  vnd.executar();
+    nova.print_solucao();
+    */
+
+
+
     Read_Arquivo arq1("teste/n5m15A.txt");
     Read_Arquivo arq2("teste/n5m15B.txt");
     Read_Arquivo arq3("teste/n25m5A.txt");

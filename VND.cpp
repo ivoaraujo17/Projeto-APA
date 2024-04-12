@@ -29,8 +29,14 @@ Solucao VND::executar() {
 }
 
 Solucao VND::swap(){
-    Solucao nova_solucao = this->solucao_atual;
+    
     int n_jobs = this->dados->get_n_jobs();
+
+    int novo_custo = this->solucao_atual.custo;
+    vector<int> job1_alocacao(2);
+    vector<int> job2_alocacao(2);
+    vector<int> s1_ocupacao(2);
+    vector<int> s2_ocupacao(2);
 
     // Combinação de jobs alocados em servidores diferentes
     for (int j1 = 0; j1 < n_jobs; j1++){
@@ -42,88 +48,50 @@ Solucao VND::swap(){
                 int serv_job2 = this->solucao_atual.alocacao[j2];
 
                 int custo_atual = this->solucao_atual.custo;
+               
+                // Retira o custo da solucao dos dois jobs
+                custo_atual -= this->dados->get_custo_job_servidor(j1, serv_job1);
+                custo_atual -= this->dados->get_custo_job_servidor(j2, serv_job2);
 
-                if (serv_job1 == -1){
-                    // retira o custo e o tempo job2 no servidor atual
-                    custo_atual -= this->dados->get_custo_job_servidor(j2, serv_job2);
-                    int ocupacao_serv_job2 = this->solucao_atual.ocupacao[serv_job2];
-                    ocupacao_serv_job2 -= this->dados->get_tempo_job_servidor(j2, serv_job2);
-                    
-                    // testa se a nova alocação é válida
-                    int tempo_job1_serv2 = this->dados->get_tempo_job_servidor(j1, serv_job2);
-                    if (ocupacao_serv_job2 + tempo_job1_serv2 <= this->dados->get_capacidade_servidor(serv_job2)){
-                        // aumenta custo do job1 no servidor do job2 + custo fixo (job2 no servidor local)
-                        custo_atual += this->dados->get_custo_job_servidor(j1, serv_job2);
-                        if (custo_atual < nova_solucao.custo){
-                            Solucao s = this->solucao_atual;
-                            s.custo = custo_atual;
-                            s.alocacao[j1] = serv_job2;
-                            s.alocacao[j2] = -1;
-                            s.ocupacao[serv_job2] += tempo_job1_serv2;
-                            nova_solucao = s;
-                        }
-                    }
+                // retira o tempo de ocupacao dos servidores
+                int t_job1 = this->dados->get_tempo_job_servidor(j1, serv_job1);
+                int t_job2 = this->dados->get_tempo_job_servidor(j2, serv_job2);
+
+                int ocupacao_serv_job1 = this->solucao_atual.ocupacao[serv_job1];
+                ocupacao_serv_job1 -= t_job1;
+                int ocupacao_serv_job2 = this->solucao_atual.ocupacao[serv_job2];
+                ocupacao_serv_job2 -= t_job2;
+                
+                // verifica se a nova alocação é válida
+                int t_job1_serv_job2 = this->dados->get_tempo_job_servidor(j1, serv_job2);
+                int t_job2_serv_job1 = this->dados->get_tempo_job_servidor(j2, serv_job1);
+
+                if (ocupacao_serv_job1 + t_job2_serv_job1 > this->dados->get_capacidade_servidor(serv_job1) ||
+                    ocupacao_serv_job2 + t_job1_serv_job2 > this->dados->get_capacidade_servidor(serv_job2)){ 
+                    // alocação inválida
+                    continue;
                 }
-                else if (serv_job2 == -1){
-                    // retira o custo e o tempo job2 no servidor atual
-                    custo_atual -= this->dados->get_custo_job_servidor(j1, serv_job1);
-                    int ocupacao_serv_job1 = this->solucao_atual.ocupacao[serv_job1];
-                    ocupacao_serv_job1 -= this->dados->get_tempo_job_servidor(j1, serv_job1);
-                    
-                    // testa se a nova alocação é válida
-                    int tempo_job2_serv_job1 = this->dados->get_tempo_job_servidor(j2, serv_job1);
-                    if (ocupacao_serv_job1 + tempo_job2_serv_job1 <= this->dados->get_capacidade_servidor(serv_job1)){
-                        // aumenta custo do job1 no servidor do job2 + custo fixo (job2 no servidor local)
-                        custo_atual += this->dados->get_custo_job_servidor(j2, serv_job1);
-                        if (custo_atual < nova_solucao.custo){
-                            Solucao s = this->solucao_atual;
-                            s.custo = custo_atual;
-                            s.alocacao[j1] = -1;
-                            s.alocacao[j2] = serv_job1;
-                            s.ocupacao[serv_job1] += tempo_job2_serv_job1;
-                            nova_solucao = s;
-                        }
-                    }
-                }
-                else {
-                    // Retira o custo da solucao dos dois jobs
-                    custo_atual -= this->dados->get_custo_job_servidor(j1, serv_job1);
-                    custo_atual -= this->dados->get_custo_job_servidor(j2, serv_job2);
 
-                    // retira o tempo de ocupacao dos servidores
-                    int t_job1 = this->dados->get_tempo_job_servidor(j1, serv_job1);
-                    int t_job2 = this->dados->get_tempo_job_servidor(j2, serv_job2);
-
-                    int ocupacao_serv_job1 = this->solucao_atual.ocupacao[serv_job1];
-                    ocupacao_serv_job1 -= t_job1;
-                    int ocupacao_serv_job2 = this->solucao_atual.ocupacao[serv_job2];
-                    ocupacao_serv_job2 -= t_job2;
-                    
-                    // verifica se a nova alocação é válida
-                    int t_job1_serv_job2 = this->dados->get_tempo_job_servidor(j1, serv_job2);
-                    int t_job2_serv_job1 = this->dados->get_tempo_job_servidor(j2, serv_job1);
-
-                    if (ocupacao_serv_job1 + t_job2_serv_job1 > this->dados->get_capacidade_servidor(serv_job1) ||
-                        ocupacao_serv_job2 + t_job1_serv_job2 > this->dados->get_capacidade_servidor(serv_job2)){ 
-                        // alocação inválida
-                        continue;
-                    }
-
-                    custo_atual += this->dados->get_custo_job_servidor(j1, serv_job2);
-                    custo_atual += this->dados->get_custo_job_servidor(j2, serv_job1);
-                    
-                    if (custo_atual < nova_solucao.custo){
-                        Solucao s = this->solucao_atual;
-                        s.custo = custo_atual;
-                        s.alocacao[j1] = serv_job2;
-                        s.alocacao[j2] = serv_job1;
-                        s.ocupacao[serv_job1] += t_job2_serv_job1;
-                        s.ocupacao[serv_job2] += t_job1_serv_job2;
-                        nova_solucao = s;
-                    }
+                custo_atual += this->dados->get_custo_job_servidor(j1, serv_job2);
+                custo_atual += this->dados->get_custo_job_servidor(j2, serv_job1);
+                
+                if (custo_atual < novo_custo){
+                    novo_custo = custo_atual;
+                    job1_alocacao[0] = j1; job1_alocacao[1] = serv_job2;
+                    job2_alocacao[0] = j2; job2_alocacao[1] = serv_job1;
+                    s1_ocupacao[0] = serv_job1; s1_ocupacao[1] = ocupacao_serv_job1 + t_job2_serv_job1;
+                    s2_ocupacao[0] = serv_job2; s2_ocupacao[1] = ocupacao_serv_job2 + t_job1_serv_job2;
                 }
             }
         }
+    }
+    Solucao nova_solucao = this->solucao_atual;
+    if (novo_custo < this->solucao_atual.custo){
+        nova_solucao.custo = novo_custo;
+        nova_solucao.alocacao[job1_alocacao[0]] = job1_alocacao[1];
+        nova_solucao.alocacao[job2_alocacao[0]] = job2_alocacao[1];
+        nova_solucao.ocupacao[s1_ocupacao[0]] = s1_ocupacao[1];
+        nova_solucao.ocupacao[s2_ocupacao[0]] = s2_ocupacao[1];
     }
     return nova_solucao;
 }

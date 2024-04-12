@@ -26,12 +26,12 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
         string aux = "";
         int pos_servidor = 0;
         for (int c=0; c < int(linha.size()); c++){
-            if (linha[c] == ' '){
+            if (linha[c] == ' ' and aux != ""){
                 this->capacidade_servidores[pos_servidor] = stoi(aux);
                 pos_servidor++;
                 aux = "";
             }
-            else{
+            else if(linha[c] != ' '){
                 aux += linha[c];
             }
         }
@@ -45,14 +45,14 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
             string aux = "";
             int coluna = 0;
             for (int c=0; c < int(linha.size()); c++){
-                if (linha[c] == ' '){
+                if (linha[c] == ' ' and aux != ""){
                     this->jobs[i][coluna].tempo = stoi(aux);
                     this->jobs[i][coluna].servidor = i;
                     this->jobs[i][coluna].id = coluna;
                     coluna++;
                     aux = "";
                 }
-                else{
+                else if(linha[c] != ' '){
                     aux += linha[c];
                 }
             }
@@ -80,6 +80,10 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
             }
             this->jobs[i][coluna].custo = stoi(aux);
         }
+    }
+    else{
+        cout << "Erro ao abrir o arquivo" << endl;
+        exit(1);
     }
 }
 

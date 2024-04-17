@@ -7,7 +7,6 @@
 
 
 int main(){
-
     /*
     Read_Arquivo entrada("entrada.txt");
     entrada.print_matriz();
@@ -19,16 +18,13 @@ int main(){
     Solucao nova =  vnd.executar();
     nova.print_solucao();
     */
-
-
-
     Read_Arquivo arq1("teste/n5m15A.txt");
     Read_Arquivo arq2("teste/n5m15B.txt");
     Read_Arquivo arq3("teste/n25m5A.txt");
     Read_Arquivo arq4("teste/n30m5A.txt");
     Read_Arquivo arq5("teste/n60m10.txt");
     Read_Arquivo arq6("teste/n60m10A.txt");
-
+    
     //dados.print_matriz();
     A_Guloso guloso(&arq1);
     guloso.executar();
@@ -81,6 +77,7 @@ int main(){
     vnd = VND(&guloso.solucao, &arq6, &guloso.jobs_ordenados);
     nova =  vnd.executar();
     nova.print_solucao();
+
     return 0;
 
 }

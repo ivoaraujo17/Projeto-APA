@@ -65,10 +65,11 @@ Solucao VND::swap(){
         for (int j2 = j1+1; j2 < n_jobs; j2++){
             // Se os jobs estão alocados em servidores diferentes
             if (this->solucao_atual.alocacao[j1] != this->solucao_atual.alocacao[j2]){
-                // Troca os servidores
+                // obtem o id do servidor de cada job
                 int serv_atual_j1 = this->solucao_atual.alocacao[j1]; // O(1)
                 int serv_atual_j2 = this->solucao_atual.alocacao[j2]; // O(1)
 
+                // Obtem o custo atual da solução
                 int custo_atual = this->solucao_atual.custo; // O(1)
 
                 // Retira o custo da solucao dos dois jobs
@@ -95,6 +96,7 @@ Solucao VND::swap(){
                 custo_atual += this->dados->get_custo_job_servidor(j1, serv_atual_j2); // O(1)
                 custo_atual += this->dados->get_custo_job_servidor(j2, serv_atual_j1); // O(1)
                 
+                // Verifica se o custo é menor que o custo atual
                 if (custo_atual < novo_custo){
                     novo_custo = custo_atual;
                     // Atualiza o novo servidor de j1 com a ocupação do servidor de destino (j2)
@@ -125,25 +127,27 @@ Solucao VND::reinsertion(){
     int servidor = -1;
     int melhor_custo = this->solucao_atual.custo;
     for (int j = 0; j < this->dados->get_n_jobs(); j++){
+        // Itera sobre os servidores para encontrar o novo melhor servidor para o job j
         for (int s = 0; s<this->dados->get_n_servidores(); s++){
-            // Se o job j não está alocado no servidor s
-            //cout << "Job: " << j << " Servidor atual: " << this->solucao_atual.alocacao[j] << " s " << s << endl;
+            // Desconsidera o servidor atual do job j
             if (this->solucao_atual.alocacao[j] != s){
                 int melhor_servidor = (*this->jobs_ordenados)[j][s].servidor;
                 int tempo_melhor_servidor = (*this->jobs_ordenados)[j][s].tempo;
 
-                //cout << "Job: " << j << " Servidor atual: " << this->solucao_atual.alocacao[j] << " sm " << melhor_servidor << endl;
-                //cout << "tp ns " << tempo_melhor_servidor << " cap_atual " << this->dados->get_capacidade_servidor(melhor_servidor) << endl;
-
+                // Verifica se o servidor tem capacidade para alocar o job j no servidor s
                 if (this->solucao_atual.ocupacao[melhor_servidor] + tempo_melhor_servidor 
                     > this->dados->get_capacidade_servidor(melhor_servidor)){
                     continue;
                 }
 
+                // Calcula o novo custo no caso realocação
                 int custo_atual = this->solucao_atual.custo;
                 custo_atual -= this->dados->get_custo_job_servidor(j, this->solucao_atual.alocacao[j]);
                 custo_atual += this->dados->get_custo_job_servidor(j, melhor_servidor);
+
+                // Verifica se o custo é menor que o custo atual
                 if (custo_atual < melhor_custo){
+                    // Atualiza o melhor custo, job e servidor para troca
                     melhor_custo = custo_atual;
                     job = j;
                     servidor = melhor_servidor;

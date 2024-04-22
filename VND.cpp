@@ -15,16 +15,48 @@ VND::VND(Solucao* solucao_gulosa, Read_Arquivo* dados, vector<vector<job>>* jobs
 }
 
 Solucao VND::executar() {
-    int k = 1;
-    while (k < 300000)
-    {
+    int k = 3;
+    while (k < 300000){   
         Solucao s = this->swap();
         if (s.custo < this->solucao_atual.custo){
             this->solucao_atual = s;
-            cout << "Solucao atualizada: " << this->solucao_atual.custo << endl;
+            k ++;
+            continue;
+        }
+        s = this->reinsertion();
+        if (s.custo < this->solucao_atual.custo){
+            this->solucao_atual = s;
+            k ++;
+            continue;
         }
         k++;
+
+        if (k == 1){
+            Solucao s = this->swap();
+            if (s.custo < this->solucao_atual.custo){
+                this->solucao_atual = s;
+                k = 1;
+            }
+            else{
+                k++;
+            }
+        }
+        else if (k == 2){
+            Solucao s = this->reinsertion();
+            if (s.custo < this->solucao_atual.custo){
+                this->solucao_atual = s;
+                k = 1;
+            }
+            else{
+                k++;
+            }
+        }
+        else{
+            continue;
+        }
     }
+
+
     return this->solucao_atual;
 }
 
@@ -102,4 +134,51 @@ Solucao VND::swap(){
         nova_solucao.ocupacao[melhor_swap.novo_server_j2] = melhor_swap.ocup_server_j2;
     }
     return nova_solucao;
+}
+
+Solucao VND::reinsertion(){
+    int job = -1;
+    int servidor = -1;
+    int melhor_custo = this->solucao_atual.custo;
+    for (int j = 0; j < this->dados->get_n_jobs(); j++){
+        for (int s = 0; s<this->dados->get_n_servidores(); s++){
+            // Se o job j não está alocado no servidor s
+            //cout << "Job: " << j << " Servidor atual: " << this->solucao_atual.alocacao[j] << " s " << s << endl;
+            if (this->solucao_atual.alocacao[j] != s){
+                int melhor_servidor = (*this->jobs_ordenados)[j][s].servidor;
+                int tempo_melhor_servidor = (*this->jobs_ordenados)[j][s].tempo;
+
+                //cout << "Job: " << j << " Servidor atual: " << this->solucao_atual.alocacao[j] << " sm " << melhor_servidor << endl;
+                //cout << "tp ns " << tempo_melhor_servidor << " cap_atual " << this->dados->get_capacidade_servidor(melhor_servidor) << endl;
+
+                if (this->solucao_atual.ocupacao[melhor_servidor] + tempo_melhor_servidor 
+                    > this->dados->get_capacidade_servidor(melhor_servidor)){
+                    continue;
+                }
+
+                int custo_atual = this->solucao_atual.custo;
+                custo_atual -= this->dados->get_custo_job_servidor(j, this->solucao_atual.alocacao[j]);
+                custo_atual += this->dados->get_custo_job_servidor(j, melhor_servidor);
+                if (custo_atual < melhor_custo){
+                    melhor_custo = custo_atual;
+                    job = j;
+                    servidor = melhor_servidor;
+                }
+            }
+        }
+    }
+    Solucao nova_solucao = this->solucao_atual;
+    if (melhor_custo < this->solucao_atual.custo){
+        // reduz a capacidade do servidor antigo
+        int servidor_antigo = nova_solucao.alocacao[job];
+        nova_solucao.ocupacao[servidor_antigo] -= this->dados->get_tempo_job_servidor(job, servidor_antigo);
+        // atualiza a nova solução
+        nova_solucao.alocacao[job] = servidor;
+        nova_solucao.ocupacao[servidor] += this->dados->get_tempo_job_servidor(job, servidor);
+        // atualiza o custo
+        nova_solucao.custo = melhor_custo;
+
+        return nova_solucao;
+    }
+    return this->solucao_atual;
 }

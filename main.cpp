@@ -7,17 +7,26 @@
 
 
 int main(){
-    /*
+    
     Read_Arquivo entrada("entrada.txt");
-    entrada.print_matriz();
     A_Guloso guloso(&entrada);
     guloso.executar();
     guloso.solucao.print_solucao();
+    cout << "Capacidade: ";
+    for (int i = 0; i < entrada.get_n_servidores(); i++){
+        cout << entrada.get_capacidade_servidor(i) << " ";
+    }
+    cout << endl;
+    cout << "Ocupacao:   ";
+    for (int i = 0; i < entrada.get_n_servidores(); i++){
+        cout << guloso.solucao.ocupacao[i] << " ";
+    }
+    cout << endl;
 
     VND vnd(&guloso.solucao, &entrada, &guloso.jobs_ordenados);
     Solucao nova =  vnd.executar();
     nova.print_solucao();
-    */
+    /*
     Read_Arquivo arq1("teste/n5m15A.txt");
     Read_Arquivo arq2("teste/n5m15B.txt");
     Read_Arquivo arq3("teste/n25m5A.txt");
@@ -32,6 +41,9 @@ int main(){
     VND vnd(&guloso.solucao, &arq1, &guloso.jobs_ordenados);
     Solucao nova =  vnd.executar();
     nova.print_solucao();
+    for (int s = 0; s < arq6.get_n_servidores(); s++){
+        cout << "Ocupacao servidor " << s << ": " << nova.ocupacao[s] << endl;
+    }
 
     cout << endl;
 
@@ -41,6 +53,9 @@ int main(){
     vnd = VND(&guloso.solucao, &arq2, &guloso.jobs_ordenados);
     nova =  vnd.executar();
     nova.print_solucao();
+    for (int s = 0; s < arq6.get_n_servidores(); s++){
+        cout << "Ocupacao servidor " << s << ": " << nova.ocupacao[s] << endl;
+    }
 
     cout << endl;
 
@@ -50,6 +65,9 @@ int main(){
     vnd = VND(&guloso.solucao, &arq3, &guloso.jobs_ordenados);
     nova =  vnd.executar();
     nova.print_solucao();
+    for (int s = 0; s < arq6.get_n_servidores(); s++){
+        cout << "Ocupacao servidor " << s << ": " << nova.ocupacao[s] << endl;
+    }
 
     cout << endl;
 
@@ -59,6 +77,9 @@ int main(){
     vnd = VND(&guloso.solucao, &arq4, &guloso.jobs_ordenados);
     nova =  vnd.executar();
     nova.print_solucao();
+    for (int s = 0; s < arq6.get_n_servidores(); s++){
+        cout << "Ocupacao servidor " << s << ": " << nova.ocupacao[s] << endl;
+    }
 
     cout << endl;
 
@@ -68,6 +89,9 @@ int main(){
     vnd = VND(&guloso.solucao, &arq5, &guloso.jobs_ordenados);
     nova =  vnd.executar();
     nova.print_solucao();
+    for (int s = 0; s < arq6.get_n_servidores(); s++){
+        cout << "Ocupacao servidor " << s << ": " << nova.ocupacao[s] << endl;
+    }
 
     cout << endl;
 
@@ -77,6 +101,10 @@ int main(){
     vnd = VND(&guloso.solucao, &arq6, &guloso.jobs_ordenados);
     nova =  vnd.executar();
     nova.print_solucao();
+    for (int s = 0; s < arq6.get_n_servidores(); s++){
+        cout << "Ocupacao servidor " << s << ": " << nova.ocupacao[s] << endl;
+    }
+    */
 
     return 0;
 

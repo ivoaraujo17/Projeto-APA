@@ -18,7 +18,7 @@ class VND {
         VND(Solucao* solucao, Read_Arquivo* dados, vector<vector<job>>* jobs_ordenados);
         Solucao executar();
         Solucao swap();
-        //Solucao VND::reinsertion();
+        Solucao reinsertion();
         //Solucao VND::two_opt();
 };
 

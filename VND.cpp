@@ -15,22 +15,8 @@ VND::VND(Solucao* solucao_gulosa, Read_Arquivo* dados, vector<vector<job>>* jobs
 }
 
 Solucao VND::executar() {
-    int k = 3;
-    while (k < 300000){   
-        Solucao s = this->swap();
-        if (s.custo < this->solucao_atual.custo){
-            this->solucao_atual = s;
-            k ++;
-            continue;
-        }
-        s = this->reinsertion();
-        if (s.custo < this->solucao_atual.custo){
-            this->solucao_atual = s;
-            k ++;
-            continue;
-        }
-        k++;
-
+    int k = 1;
+    while (k < 3){   
         if (k == 1){
             Solucao s = this->swap();
             if (s.custo < this->solucao_atual.custo){
@@ -55,8 +41,6 @@ Solucao VND::executar() {
             continue;
         }
     }
-
-
     return this->solucao_atual;
 }
 

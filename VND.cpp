@@ -16,24 +16,10 @@ VND::VND(Solucao* solucao_gulosa, Read_Arquivo* dados, vector<vector<job>>* jobs
 
 Solucao VND::executar() {
     int k = 1;
-    while (k <= 3){  
-        cout << "k = " << k << endl; 
-        if (k == 3){
-            cout << "swap ";
-            Solucao s = this->swap();
-            cout << s.custo << " " << this->solucao_atual.custo << endl;
-            if (s.custo < this->solucao_atual.custo){
-                this->solucao_atual = s;
-                k = 1;
-            }
-            else{
-                k++;
-            }
-        }
-        else if (k == 1){
-            cout << "swap_local ";
+    while (k <= 3){
+        cout << "inicio da rodada\n";  
+        if (k == 1){
             Solucao s = this->swap_local();
-            cout << s.custo << " " << this->solucao_atual.custo << endl;
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
                 k = 1;
@@ -41,21 +27,31 @@ Solucao VND::executar() {
             else{
                 k++;
             }
+            cout << "acabou swap_local\n";
         }
         else if (k == 2){
-            cout << "reinsertion ";
             Solucao s = this->reinsertion();
-            cout << s.custo << " " << this->solucao_atual.custo << endl;
             if (s.custo < this->solucao_atual.custo){
-                cout << "trocou" << endl;
                 this->solucao_atual = s;
                 k = 1;
             }
             else{
                 k++;
-                cout << "k = " << k << endl;
             }
+            cout << "acabou reinsertion\n";
         }
+        else if (k == 3){
+            Solucao s = this->swap();
+            if (s.custo < this->solucao_atual.custo){
+                this->solucao_atual = s;
+                k = 1;
+            }
+            else{
+                k++;
+            }
+            cout << "acabou swap\n";
+        }
+        cout << "rodada completa\n";
     }
     return this->solucao_atual;
 }

@@ -35,14 +35,14 @@ int main(){
   
     guloso.solucao.print_solucao();
     print_capacidade_ocupacao(&arq1, &guloso.solucao);
-
+    /*
     cout << "job " << endl;
     for (int j = 0; j < arq1.get_n_jobs(); j++){
         int servidor_alocado = guloso.solucao.alocacao[j];
         cout << "Job " << j << " no servidor " << servidor_alocado << " : " << arq1.get_tempo_job_servidor(j, servidor_alocado) << " ";
         cout << endl;
     }
-    cout << endl;
+    cout << endl;*/
     
     VND vnd(&guloso.solucao, &arq1, &guloso.jobs_ordenados);
     Solucao nova =  vnd.executar();

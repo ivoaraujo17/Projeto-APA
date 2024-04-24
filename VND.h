@@ -19,7 +19,7 @@ class VND {
         Solucao executar();
         Solucao swap();
         Solucao reinsertion();
-        //Solucao VND::two_opt();
+        Solucao swap_local();
 };
 
 

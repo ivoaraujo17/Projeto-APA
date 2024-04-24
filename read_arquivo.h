@@ -12,6 +12,7 @@ struct job{
     int tempo;
     int custo;
     int servidor;
+    int ct;
 };
 
 class Read_Arquivo {
@@ -25,6 +26,7 @@ private:
     vector<int> capacidade_servidores;
 
 public:
+    vector<job> jobs_total;
     Read_Arquivo(string nome_arquivo);
     int get_n_jobs();
     int get_n_servidores();

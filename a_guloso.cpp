@@ -18,34 +18,31 @@ void A_Guloso::executar(){
     int n_servidores = dados->get_n_servidores();
     int n_jobs = dados->get_n_jobs();
     this->jobs_ordenados.resize(n_jobs, vector<job>(n_servidores));
-    // O(j*s)
-    for (int j = 0; j < n_jobs; j++){
-        vector<job> info_job = dados->get_info_job(j); // Complexidade O(s)
-        
-        // Ordena usando o sort atraves do job.tempo
-        sort(info_job.begin(), info_job.end(), [](job a, job b){
-            return a.tempo < b.tempo;
-        });
 
-        jobs_ordenados[j] = info_job;
-        // aloca o job no servidor de menor custo O(s)
-        for (int s = 0; s < n_servidores; s++){
-            if (this->solucao.ocupacao[s] + info_job[s].tempo <= dados->get_capacidade_servidor(s)){
-                this->solucao.ocupacao[s] += info_job[s].tempo;
-                this->solucao.custo += info_job[s].custo;
-                this->solucao.alocacao[j] = s;
-                break; 
-            }
+    // Ordena usando o sort atraves do job.tempo
+    sort(dados->jobs_total.begin(), dados->jobs_total.end(), [](job a, job b){
+        return a.ct < b.ct;
+    });
+    // O(j*s)
+    int j = 0;
+    int index = 0;
+    while (j < n_jobs){
+        int id_job = dados->jobs_total[index].id;
+        int id_servidor = dados->jobs_total[index].servidor;
+        int tempo = dados->jobs_total[index].tempo;
+        
+        if (this->solucao.alocacao[id_job] != -1){
+            index++;
+            continue;
         }
-    }
-    // Verifica se algum job não foi alocado
-    int custo_fixo = dados->get_custo_fixo();
-    for (int j = 0; j < n_jobs; j++){
-        if (this->solucao.alocacao[j] == -1){
-            this->solucao.custo += custo_fixo;
+        if (this->solucao.ocupacao[id_servidor] + tempo <= dados->get_capacidade_servidor(id_servidor)){
+            this->solucao.ocupacao[id_servidor] += tempo;
+            this->solucao.custo += dados->jobs_total[index].custo;
+            this->solucao.alocacao[id_job] = id_servidor;
+            j++;    
         }
-    }
-    //this->print_guloso();
+        index++;
+    } 
 }
 
 void A_Guloso::print_guloso(){

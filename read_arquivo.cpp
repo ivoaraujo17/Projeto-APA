@@ -115,10 +115,16 @@ int Read_Arquivo::get_custo_fixo(){
 }
 
 int Read_Arquivo::get_tempo_job_servidor(int job, int servidor){
+    if (servidor == -1){
+        return -1;
+    }
     return this->jobs[servidor][job].tempo;
 }
 
 int Read_Arquivo::get_custo_job_servidor(int job, int servidor){
+    if (servidor == -1){
+        return custo_fixo;
+    }
     return this->jobs[servidor][job].custo;
 }
 

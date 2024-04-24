@@ -21,12 +21,13 @@ void A_Guloso::executar(){
 
     // Ordena usando o sort atraves do job.tempo
     sort(dados->jobs_total.begin(), dados->jobs_total.end(), [](job a, job b){
-        return a.ct < b.ct;
+        return a.tempo < b.tempo;
     });
     // O(j*s)
-    int j = 0;
+    int jobs_alocados = 0;
     int index = 0;
-    while (j < n_jobs){
+    this->solucao.custo = n_jobs * dados->get_custo_fixo();
+    while (index < dados->jobs_total.size() && jobs_alocados < n_jobs){
         int id_job = dados->jobs_total[index].id;
         int id_servidor = dados->jobs_total[index].servidor;
         int tempo = dados->jobs_total[index].tempo;
@@ -37,9 +38,10 @@ void A_Guloso::executar(){
         }
         if (this->solucao.ocupacao[id_servidor] + tempo <= dados->get_capacidade_servidor(id_servidor)){
             this->solucao.ocupacao[id_servidor] += tempo;
+            this->solucao.custo -= dados->get_custo_fixo();
             this->solucao.custo += dados->jobs_total[index].custo;
             this->solucao.alocacao[id_job] = id_servidor;
-            j++;    
+            jobs_alocados++;   
         }
         index++;
     } 

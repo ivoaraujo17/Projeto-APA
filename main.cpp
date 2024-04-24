@@ -29,91 +29,40 @@ int main(){
     Read_Arquivo arq5("teste/n60m10.txt");
     Read_Arquivo arq6("teste/n60m10A.txt");
     
-    // arquivo 1
-    A_Guloso guloso(&arq1);
-    guloso.executar();
-  
-    guloso.solucao.print_solucao();
-    print_capacidade_ocupacao(&arq1, &guloso.solucao);
-    /*
-    cout << "job " << endl;
-    for (int j = 0; j < arq1.get_n_jobs(); j++){
-        int servidor_alocado = guloso.solucao.alocacao[j];
-        cout << "Job " << j << " no servidor " << servidor_alocado << " : " << arq1.get_tempo_job_servidor(j, servidor_alocado) << " ";
+    vector<Read_Arquivo*> arquivos = {&arq1, &arq2, &arq3, &arq4, &arq5, &arq6};
+
+    int otimos[6] = {261, 269, 438, 423, 954, 973};
+    int Sguloso[6];
+    int SVND[6];
+    float GAP_guloso[6];
+    float GAP_VND[6];
+
+    //dados.print_matriz();
+    for (int i = 0; i < 6; ++i){
+        A_Guloso guloso(arquivos[i]);
+        guloso.executar();
+        guloso.solucao.print_solucao();
+        print_capacidade_ocupacao(arquivos[i], &guloso.solucao);
+        Sguloso[i] = guloso.solucao.custo;
+        GAP_guloso[i] = ((static_cast<float>(guloso.solucao.custo) - otimos[i]) / otimos[i]) * 100.0f;
+
+        VND vnd(&guloso.solucao, arquivos[i], &guloso.jobs_ordenados);
+        Solucao nova =  vnd.executar();
+        nova.print_solucao();
+        print_capacidade_ocupacao(arquivos[i], &nova);
+        SVND[i] = nova.custo;
+        GAP_VND[i] = ((static_cast<float>(nova.custo) - otimos[i]) / otimos[i]) * 100.0f;
+
+
         cout << endl;
     }
-    cout << endl;*/
-    
-    VND vnd(&guloso.solucao, &arq1, &guloso.jobs_ordenados);
-    Solucao nova =  vnd.executar();
-    nova.print_solucao();
-    print_capacidade_ocupacao(&arq1, &nova);
 
-    cout << "job " << endl;
-    for (int j = 0; j < arq1.get_n_jobs(); j++){
-        int servidor_alocado = nova.alocacao[j];
-        cout << "Job " << j << " no servidor " << servidor_alocado << " : " << arq1.get_tempo_job_servidor(j, servidor_alocado) << " ";
-        cout << endl;
+    cout << " Instancias " << " Otimo " << " Solucao Guloso " << " Tempo Guloso " << " GAP Guloso " << " Solucao VND " << " Tempo VND " << " GAP VND " << endl;   
+    for (int i = 0; i < 6; ++i){
+        cout << otimos[i]<< " " << Sguloso[i] << " tempo " << GAP_guloso[i] << " " << SVND[i] << " tempo " << GAP_VND[i] << endl; 
     }
 
-    cout << endl;
-    
-    /*
-    guloso = A_Guloso(&arq2);
-    guloso.executar();
-    guloso.solucao.print_solucao();
-    print_capacidade_ocupacao(&arq2, &guloso.solucao);
 
-    vnd = VND(&guloso.solucao, &arq2, &guloso.jobs_ordenados);
-    nova =  vnd.executar();
-    nova.print_solucao();
-    print_capacidade_ocupacao(&arq2, &nova);
-
-    cout << endl;
-
-    guloso = A_Guloso(&arq3);
-    guloso.executar();
-    guloso.solucao.print_solucao();
-    print_capacidade_ocupacao(&arq3, &guloso.solucao);
-
-    vnd = VND(&guloso.solucao, &arq3, &guloso.jobs_ordenados);
-    nova =  vnd.executar();
-    nova.print_solucao();
-    print_capacidade_ocupacao(&arq3, &nova);
-
-    cout << endl;
-
-    guloso = A_Guloso(&arq4);
-    guloso.executar();
-    guloso.solucao.print_solucao();
-    print_capacidade_ocupacao(&arq4, &guloso.solucao);
-    vnd = VND(&guloso.solucao, &arq4, &guloso.jobs_ordenados);
-    nova =  vnd.executar();
-    nova.print_solucao();
-    print_capacidade_ocupacao(&arq4, &nova);
-
-    cout << endl;
-
-    guloso = A_Guloso(&arq5);
-    guloso.executar();
-    guloso.solucao.print_solucao();
-    print_capacidade_ocupacao(&arq5, &guloso.solucao);
-    vnd = VND(&guloso.solucao, &arq5, &guloso.jobs_ordenados);
-    nova =  vnd.executar();
-    nova.print_solucao();
-    print_capacidade_ocupacao(&arq5, &nova);
-
-    cout << endl;
-
-    guloso = A_Guloso(&arq6);
-    guloso.executar();
-    guloso.solucao.print_solucao();
-    print_capacidade_ocupacao(&arq6, &guloso.solucao);
-    vnd = VND(&guloso.solucao, &arq6, &guloso.jobs_ordenados);
-    nova =  vnd.executar();
-    nova.print_solucao();
-    print_capacidade_ocupacao(&arq6, &nova);
-    */
     return 0;
 
 }

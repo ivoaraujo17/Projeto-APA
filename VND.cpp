@@ -29,14 +29,18 @@ Solucao VND::executar() {
             }
         }
         else if (k == 2){
+            cout << "aqui ele chama a funcao reinsertion\n";
             Solucao s = this->reinsertion();
+            cout << "aqui ele passou da funcao reinsertion\n";
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
                 k = 1;
+                cout << "aqui ele atualizou a solucao\n";
                 continue;
             }
             else{
                 k++;
+                cout << "aqui ele nao atualizou a solucao\n";
                 continue;
             }
         }

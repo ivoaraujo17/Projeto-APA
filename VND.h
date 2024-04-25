@@ -13,9 +13,8 @@ class VND {
     private:
         Solucao solucao_atual;
         Read_Arquivo* dados;
-        vector<vector<job>>* jobs_ordenados;
     public:
-        VND(Solucao* solucao, Read_Arquivo* dados, vector<vector<job>>* jobs_ordenados);
+        VND(Solucao* solucao, Read_Arquivo* dados);
         Solucao executar();
         Solucao swap();
         Solucao reinsertion();

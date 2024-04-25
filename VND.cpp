@@ -8,23 +8,24 @@
 
 using namespace std;
 
-VND::VND(Solucao* solucao_gulosa, Read_Arquivo* dados, vector<vector<job>>* jobs_ordenados) {
+VND::VND(Solucao* solucao_gulosa, Read_Arquivo* dados) {
     this->solucao_atual = *solucao_gulosa;
     this->dados = dados;
-    this->jobs_ordenados = jobs_ordenados;
 }
 
 Solucao VND::executar() {
     int k = 1;
-    while (k <= 3){
+    while (k < 4){
         if (k == 1){
             Solucao s = this->swap_local();
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
                 k = 1;
+                continue;
             }
             else{
                 k++;
+                continue;
             }
         }
         else if (k == 2){
@@ -32,9 +33,11 @@ Solucao VND::executar() {
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
                 k = 1;
+                continue;
             }
             else{
                 k++;
+                continue;
             }
         }
         else if (k == 3){
@@ -42,11 +45,12 @@ Solucao VND::executar() {
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
                 k = 1;
+                continue;
             }
             else{
                 k++;
+                continue;
             }
-   
         }
       
     }
@@ -266,6 +270,8 @@ Solucao VND::reinsertion(){
                 
                 int tempo_novo_servidor = this->dados->get_tempo_job_servidor(j, s);
                 // Verifica se o servidor tem capacidade para alocar o job j no servidor s
+                //cout << "job: " << j << " servidor_atual: " << this->solucao_atual.alocacao[j] << " servidor_novo: " << s;
+                //cout << " tn_servidor: " << tempo_novo_servidor << " ocupacao: " << this->solucao_atual.ocupacao[s] << " capacidade: " << this->dados->get_capacidade_servidor(s) << endl; 
                 if (this->solucao_atual.ocupacao[s] + tempo_novo_servidor 
                     > this->dados->get_capacidade_servidor(s)){
                     continue;
@@ -284,6 +290,7 @@ Solucao VND::reinsertion(){
             }
         }
     }
+    //cout << "finalizou busca\n";
     Solucao nova_solucao = this->solucao_atual;
     if (melhor_custo < this->solucao_atual.custo){
         // reduz a capacidade do servidor antigo
@@ -294,7 +301,6 @@ Solucao VND::reinsertion(){
         nova_solucao.ocupacao[servidor] += this->dados->get_tempo_job_servidor(job, servidor);
         // atualiza o custo
         nova_solucao.custo = melhor_custo;
-
         return nova_solucao;
     }
     return this->solucao_atual;

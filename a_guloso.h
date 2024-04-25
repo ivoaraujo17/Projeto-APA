@@ -13,7 +13,6 @@ class A_Guloso {
     private:
         Read_Arquivo* dados;
     public:
-        vector<vector<job>> jobs_ordenados;
         Solucao solucao;
         A_Guloso(Read_Arquivo* dados);
         void executar();

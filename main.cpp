@@ -57,7 +57,7 @@ int main(){
         tempo_guloso[i] = duracao.count();
         GAP_guloso[i] = ((static_cast<float>(guloso.solucao.custo) - otimos[i]) / otimos[i]) * 100.0f;
 
-        VND vnd(&guloso.solucao, arquivos[i], &guloso.jobs_ordenados);
+        VND vnd(&guloso.solucao, arquivos[i]);
         inicio = chrono::system_clock::now();
         Solucao nova =  vnd.executar();
         fim = chrono::system_clock::now();
@@ -71,9 +71,11 @@ int main(){
         cout << endl;
     }
 
-    cout << " Otimo" << setw(10) << " Solucao_Guloso" << setw(10) << " Tempo_Guloso" << setw(10) << " GAP_Guloso" << setw(10) << " Solucao_VND" << setw(10) << " Tempo_VND" << setw(10) <<  " GAP_VND" << endl;
+    cout << "Otimo " << setw(10) << " Solucao_Guloso " << setw(10) << " Tempo_Guloso " << setw(10) << " GAP_Guloso " << setw(10) << " Solucao_VND " << setw(10) << " Tempo_VND " << setw(10) <<  " GAP_VND " << endl;
     for (int i = 0; i < 6; ++i){
-        cout << otimos[i] << setw(12) << Sguloso[i] << setw(12) << tempo_guloso[i] << setw(15) << GAP_guloso[i] << setw(8) << SVND[i] << setw(12) << tempo_VND[i] << setw(12) << GAP_VND[i] << endl; 
+        cout << otimos[i] <<  setw(5) << " | " << setw(8) << Sguloso[i] << setw(8) << " | " << setw(8) << tempo_guloso[i] << setw(5) << " | ";
+        cout << setw(8) << GAP_guloso[i] << setw(5) << " | " << setw(8) << SVND[i] << setw(5) << " | " << setw(8) << tempo_VND[i] << setw(3) << " | ";
+        cout << setw(8) << GAP_VND[i] << endl; 
     }
 
 

@@ -58,11 +58,7 @@ Solucao VND::executar() {
 }
 
 Solucao VND::swap(){
-    
-    int n_jobs = this->dados->get_n_jobs();
 
-    int novo_custo = this->solucao_atual.custo;
-    
     struct swap{
         int job1;
         int novo_server_j1;
@@ -70,9 +66,16 @@ Solucao VND::swap(){
         int job2;
         int novo_server_j2;
         int ocup_server_j2;
+        int novo_custo;
+        int custo_nuvem;
+        int custo_local;
     };
-
     swap melhor_swap;
+    melhor_swap.novo_custo = this->solucao_atual.custo;
+    melhor_swap.custo_local = this->solucao_atual.custo_local;
+    melhor_swap.custo_nuvem = this->solucao_atual.custo_nuvem;
+
+    int n_jobs = this->dados->get_n_jobs();
     // Combinação de jobs alocados em servidores diferentes
     for (int j1 = 0; j1 < n_jobs; j1++){
         for (int j2 = j1+1; j2 < n_jobs; j2++){
@@ -115,8 +118,8 @@ Solucao VND::swap(){
             custo_atual += this->dados->get_custo_job_servidor(j2, serv_atual_j1); // O(1)
             
             // Verifica se o custo é menor que o custo atual
-            if (custo_atual < novo_custo){
-                novo_custo = custo_atual;
+            if (custo_atual < melhor_swap.novo_custo){
+                melhor_swap.novo_custo = custo_atual;
                 // Atualiza o novo servidor de j1 com a ocupação do servidor de destino (j2)
                 melhor_swap.job1 = j1;
                 melhor_swap.novo_server_j1 = serv_atual_j2;
@@ -125,12 +128,21 @@ Solucao VND::swap(){
                 melhor_swap.job2 = j2;
                 melhor_swap.novo_server_j2 = serv_atual_j1;
                 melhor_swap.ocup_server_j2 = ocup_serv_atual_j1 + t_j2_serv_j1;
+                // Atualiza o custo local e nuvem
+                melhor_swap.custo_local = this->solucao_atual.custo_local;
+                melhor_swap.custo_nuvem = this->solucao_atual.custo_nuvem 
+                                            - this->dados->get_custo_job_servidor(j1, serv_atual_j1) 
+                                            - this->dados->get_custo_job_servidor(j2, serv_atual_j2) 
+                                            + this->dados->get_custo_job_servidor(j1, serv_atual_j2) 
+                                            + this->dados->get_custo_job_servidor(j2, serv_atual_j1);
             }
         }
     }
     Solucao nova_solucao = this->solucao_atual;
-    if (novo_custo < this->solucao_atual.custo){
-        nova_solucao.custo = novo_custo;
+    if (melhor_swap.novo_custo < this->solucao_atual.custo){
+        nova_solucao.custo = melhor_swap.novo_custo;
+        nova_solucao.custo_nuvem = melhor_swap.custo_nuvem;
+        nova_solucao.custo_local = melhor_swap.custo_local;
         nova_solucao.alocacao[melhor_swap.job1] = melhor_swap.novo_server_j1;
         nova_solucao.alocacao[melhor_swap.job2] = melhor_swap.novo_server_j2;
         nova_solucao.ocupacao[melhor_swap.novo_server_j1] = melhor_swap.ocup_server_j1;
@@ -140,11 +152,7 @@ Solucao VND::swap(){
 }
 
 Solucao VND::swap_local(){
-    
-    int n_jobs = this->dados->get_n_jobs();
 
-    int novo_custo = this->solucao_atual.custo;
-    
     struct swap{
         int job1;
         int novo_server_j1;
@@ -152,9 +160,17 @@ Solucao VND::swap_local(){
         int job2;
         int novo_server_j2;
         int ocup_server_j2;
+        int novo_custo;
+        int custo_nuvem;
+        int custo_local;
     };
 
     swap melhor_swap;
+    melhor_swap.novo_custo = this->solucao_atual.custo;
+    melhor_swap.custo_local = this->solucao_atual.custo_local;
+    melhor_swap.custo_nuvem = this->solucao_atual.custo_nuvem;
+    int n_jobs = this->dados->get_n_jobs();
+
     // Combinação de jobs alocados em servidores diferentes
     for (int j1 = 0; j1 < n_jobs; j1++){
         for (int j2 = j1+1; j2 < n_jobs; j2++){
@@ -174,7 +190,8 @@ Solucao VND::swap_local(){
                 int custo_atual = this->solucao_atual.custo; // O(1)
 
                 // Retira o custo da solucao dos dois jobs
-                custo_atual -= this->dados->get_custo_job_servidor(j2, serv_atual_j2); // O(1)
+                int custo_j2_serv_j2 = this->dados->get_custo_job_servidor(j2, serv_atual_j2); // O(1)
+                custo_atual -= custo_j2_serv_j2;
                 // retira o tempo de ocupação dos jobs
                 int ocup_serv_atual_j2 = this->solucao_atual.ocupacao[serv_atual_j2]  // O(1)
                                         - this->dados->get_tempo_job_servidor(j2, serv_atual_j2); // O(1)
@@ -187,13 +204,13 @@ Solucao VND::swap_local(){
                     // alocação inválida
                     continue;
                 }
-
-                custo_atual += this->dados->get_custo_job_servidor(j1, serv_atual_j2); // O(1)
+                int custo_j1_serv_j2 = this->dados->get_custo_job_servidor(j1, serv_atual_j2); // O(1)
+                custo_atual += custo_j1_serv_j2;
                 // não precisa adicionar o custo fixo pois o servidor j1 estava adicionando o custo fixo
                 
                 // Verifica se o custo é menor que o custo atual
-                if (custo_atual < novo_custo){
-                    novo_custo = custo_atual;
+                if (custo_atual < melhor_swap.novo_custo){
+                    melhor_swap.novo_custo = custo_atual;
                     // Atualiza o novo servidor de j1 com a ocupação do servidor de destino (j2)
                     melhor_swap.job1 = j1;
                     melhor_swap.novo_server_j1 = serv_atual_j2;
@@ -202,6 +219,9 @@ Solucao VND::swap_local(){
                     melhor_swap.job2 = j2;
                     melhor_swap.novo_server_j2 = -1;
                     melhor_swap.ocup_server_j2 = -1;
+                    // Atualiza o custo local e nuvem
+                    melhor_swap.custo_local = this->solucao_atual.custo_local;
+                    melhor_swap.custo_nuvem = this->solucao_atual.custo - custo_j2_serv_j2 + custo_j1_serv_j2;
                 }
             }
             else{
@@ -209,7 +229,8 @@ Solucao VND::swap_local(){
                 int custo_atual = this->solucao_atual.custo; // O(1)
 
                 // Retira o custo da solucao dos dois jobs
-                custo_atual -= this->dados->get_custo_job_servidor(j1, serv_atual_j1); // O(1)
+                int custo_j1_serv_j1 = this->dados->get_custo_job_servidor(j1, serv_atual_j1); // O(1)
+                custo_atual -= custo_j1_serv_j1;
 
                 // retira o tempo de ocupação dos jobs
                 int ocup_serv_atual_j1 = this->solucao_atual.ocupacao[serv_atual_j1]   // O(1)
@@ -224,11 +245,12 @@ Solucao VND::swap_local(){
                     continue;
                 }
 
-                custo_atual += this->dados->get_custo_job_servidor(j2, serv_atual_j1); // O(1)
+                int custo_j2_serv_j1 = this->dados->get_custo_job_servidor(j2, serv_atual_j1); // O(1)
+                custo_atual += custo_j2_serv_j1;
                 
                 // Verifica se o custo é menor que o custo atual
-                if (custo_atual < novo_custo){
-                    novo_custo = custo_atual;
+                if (custo_atual < melhor_swap.novo_custo){
+                    melhor_swap.novo_custo = custo_atual;
                     // Atualiza o novo servidor de j1 com a ocupação do servidor de destino (j2)
                     melhor_swap.job1 = j1;
                     melhor_swap.novo_server_j1 = -1;
@@ -237,6 +259,9 @@ Solucao VND::swap_local(){
                     melhor_swap.job2 = j2;
                     melhor_swap.novo_server_j2 = serv_atual_j1;
                     melhor_swap.ocup_server_j2 = ocup_serv_atual_j1 + t_j2_serv_j1;
+                    // Atualiza o custo local e nuvem
+                    melhor_swap.custo_local = this->solucao_atual.custo_local;
+                    melhor_swap.custo_nuvem = this->solucao_atual.custo - custo_j1_serv_j1 + custo_j2_serv_j1;
                 }
             }
 
@@ -244,8 +269,10 @@ Solucao VND::swap_local(){
         }
     }
     Solucao nova_solucao = this->solucao_atual;
-    if (novo_custo < this->solucao_atual.custo){
-        nova_solucao.custo = novo_custo;
+    if (melhor_swap.novo_custo < this->solucao_atual.custo){
+        nova_solucao.custo = melhor_swap.novo_custo;
+        nova_solucao.custo_nuvem = melhor_swap.custo_nuvem;
+        nova_solucao.custo_local = melhor_swap.custo_local;
         nova_solucao.alocacao[melhor_swap.job1] = melhor_swap.novo_server_j1;
         nova_solucao.alocacao[melhor_swap.job2] = melhor_swap.novo_server_j2;
         if (melhor_swap.novo_server_j1 != -1){
@@ -259,9 +286,20 @@ Solucao VND::swap_local(){
 }
 
 Solucao VND::reinsertion(){
-    int job = -1;
-    int servidor = -1;
-    int melhor_custo = this->solucao_atual.custo;
+
+    struct reinsertion{
+        int job = -1;
+        int servidor = -1;
+        int novo_custo;
+        int custo_nuvem;
+        int custo_local;
+    };
+
+    reinsertion melhor_reinsertion;
+    melhor_reinsertion.novo_custo = this->solucao_atual.custo;
+    melhor_reinsertion.custo_local = this->solucao_atual.custo_local;
+    melhor_reinsertion.custo_nuvem = this->solucao_atual.custo_nuvem;
+
     for (int j = 0; j < this->dados->get_n_jobs(); j++){
         // Itera sobre os servidores para encontrar o novo melhor servidor para o job j
         for (int s = 0; s<this->dados->get_n_servidores(); s++){
@@ -274,24 +312,43 @@ Solucao VND::reinsertion(){
                     > this->dados->get_capacidade_servidor(s)){
                     continue;
                 }
-                // Calcula o novo custo no caso realocação
+                // recupera o custo atual da solução
                 int custo_atual = this->solucao_atual.custo;
-                custo_atual -= this->dados->get_custo_job_servidor(j, this->solucao_atual.alocacao[j]);
-                custo_atual += this->dados->get_custo_job_servidor(j, s);
-                // Verifica se o custo é menor que o custo atual
-                if (custo_atual < melhor_custo){
+
+                // Retira o custo do job j no servidor atual
+                int servidor_atual = this->solucao_atual.alocacao[j];
+                int custo_job_servidor_atual = this->dados->get_custo_job_servidor(j, servidor_atual);
+                custo_atual -= custo_job_servidor_atual;
+
+                // Adiciona o custo do job j no novo servidor
+                int custo_job_servidor_novo = this->dados->get_custo_job_servidor(j, s);
+                custo_atual += custo_job_servidor_novo;
+                // Verifica se o custo_atual é menor que o novo custo dos reinsertion anteriores
+                if (custo_atual < melhor_reinsertion.novo_custo){
                     // Atualiza o melhor custo, job e servidor para troca
-                    melhor_custo = custo_atual;
-                    job = j;
-                    servidor = s;
+                    melhor_reinsertion.novo_custo = custo_atual;
+                    melhor_reinsertion.job = j;
+                    melhor_reinsertion.servidor = s;
+                    if (servidor_atual == -1){
+                        // se for troca do local para a nuvem, retira o custo fixo do custo local e adiciona no custo da nuvem
+                        // o custo do job no servidor novo
+                        melhor_reinsertion.custo_local = this->solucao_atual.custo_local - custo_job_servidor_atual;
+                        melhor_reinsertion.custo_nuvem = this->solucao_atual.custo_nuvem + custo_job_servidor_novo;
+                    }
+                    else{
+                        melhor_reinsertion.custo_nuvem = this->solucao_atual.custo_nuvem - custo_job_servidor_atual 
+                                                        + custo_job_servidor_novo;
+                    }
                 }
             }
         }
     }
     //cout << "finalizou busca\n";
     Solucao nova_solucao = this->solucao_atual;
-    if (melhor_custo < this->solucao_atual.custo){
+    if (melhor_reinsertion.novo_custo < this->solucao_atual.custo){
         // reduz a capacidade do servidor antigo
+        int job = melhor_reinsertion.job;
+        int servidor = melhor_reinsertion.servidor;
         int servidor_antigo = nova_solucao.alocacao[job];
         if (servidor_antigo != -1){
             nova_solucao.ocupacao[servidor_antigo] -= this->dados->get_tempo_job_servidor(job, servidor_antigo);
@@ -300,7 +357,9 @@ Solucao VND::reinsertion(){
         nova_solucao.alocacao[job] = servidor;
         nova_solucao.ocupacao[servidor] += this->dados->get_tempo_job_servidor(job, servidor);
         // atualiza o custo
-        nova_solucao.custo = melhor_custo;
+        nova_solucao.custo = melhor_reinsertion.novo_custo;
+        nova_solucao.custo_nuvem = melhor_reinsertion.custo_nuvem;
+        nova_solucao.custo_local = melhor_reinsertion.custo_local;
         return nova_solucao;
     }
     return this->solucao_atual;

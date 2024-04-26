@@ -25,6 +25,8 @@ void A_Guloso::executar(){
     int jobs_alocados = 0;
     int index = 0;
     this->solucao.custo = n_jobs * dados->get_custo_fixo();
+    this->solucao.custo_local = n_jobs * dados->get_custo_fixo();
+    this->solucao.custo_nuvem = 0;
     while (index < int(dados->jobs_total.size()) && jobs_alocados < n_jobs){
         int id_job = dados->jobs_total[index].id;
         int id_servidor = dados->jobs_total[index].servidor;
@@ -35,10 +37,17 @@ void A_Guloso::executar(){
             continue;
         }
         if (this->solucao.ocupacao[id_servidor] + tempo <= dados->get_capacidade_servidor(id_servidor)){
-            this->solucao.ocupacao[id_servidor] += tempo;
-            this->solucao.custo -= dados->get_custo_fixo();
-            this->solucao.custo += dados->jobs_total[index].custo;
+            // Remove o custo fixo do custo total por ter alocado mais um job na nuvem
+            int custo_fixo = dados->get_custo_fixo();
+            this->solucao.custo -= custo_fixo;
+            this->solucao.custo_local -= custo_fixo;
+            // Adiciona o custo do job alocado
+            int custo = dados->jobs_total[index].custo;
+            this->solucao.custo += custo;
+            this->solucao.custo_nuvem += custo;
+            // Atualiza alocação e ocupação do novo servidor
             this->solucao.alocacao[id_job] = id_servidor;
+            this->solucao.ocupacao[id_servidor] += tempo;
             jobs_alocados++;   
         }
         index++;

@@ -11,6 +11,8 @@ class Solucao{
         vector<int> alocacao;
         vector<int> ocupacao;
         int custo;
+        int custo_nuvem;
+        int custo_local;
 
         Solucao();
         Solucao(int n_jobs, int n_servidores);

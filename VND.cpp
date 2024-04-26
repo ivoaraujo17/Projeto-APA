@@ -28,23 +28,19 @@ Solucao VND::executar() {
                 continue;
             }
         }
-        else if (k == 2){
-            cout << "aqui ele chama a funcao reinsertion\n";
+        else if (k == 3){
             Solucao s = this->reinsertion();
-            cout << "aqui ele passou da funcao reinsertion\n";
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
                 k = 1;
-                cout << "aqui ele atualizou a solucao\n";
                 continue;
             }
             else{
                 k++;
-                cout << "aqui ele nao atualizou a solucao\n";
                 continue;
             }
         }
-        else if (k == 3){
+        else if (k == 2){
             Solucao s = this->swap();
             if (s.custo < this->solucao_atual.custo){
                 this->solucao_atual = s;
@@ -274,8 +270,6 @@ Solucao VND::reinsertion(){
                 
                 int tempo_novo_servidor = this->dados->get_tempo_job_servidor(j, s);
                 // Verifica se o servidor tem capacidade para alocar o job j no servidor s
-                //cout << "job: " << j << " servidor_atual: " << this->solucao_atual.alocacao[j] << " servidor_novo: " << s;
-                //cout << " tn_servidor: " << tempo_novo_servidor << " ocupacao: " << this->solucao_atual.ocupacao[s] << " capacidade: " << this->dados->get_capacidade_servidor(s) << endl; 
                 if (this->solucao_atual.ocupacao[s] + tempo_novo_servidor 
                     > this->dados->get_capacidade_servidor(s)){
                     continue;
@@ -299,7 +293,9 @@ Solucao VND::reinsertion(){
     if (melhor_custo < this->solucao_atual.custo){
         // reduz a capacidade do servidor antigo
         int servidor_antigo = nova_solucao.alocacao[job];
-        nova_solucao.ocupacao[servidor_antigo] -= this->dados->get_tempo_job_servidor(job, servidor_antigo);
+        if (servidor_antigo != -1){
+            nova_solucao.ocupacao[servidor_antigo] -= this->dados->get_tempo_job_servidor(job, servidor_antigo);
+        }
         // atualiza a nova solução
         nova_solucao.alocacao[job] = servidor;
         nova_solucao.ocupacao[servidor] += this->dados->get_tempo_job_servidor(job, servidor);

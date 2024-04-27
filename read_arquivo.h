@@ -27,6 +27,7 @@ private:
 
 public:
     vector<job> jobs_total;
+    string nome;
     Read_Arquivo(string nome_arquivo);
     int get_n_jobs();
     int get_n_servidores();

@@ -9,14 +9,9 @@
 
 
 void print_capacidade_ocupacao(Read_Arquivo* entrada, Solucao* solucao){
-    cout << "Capacidade: ";
+    cout << "Capacidade - Ocupacao: ";
     for (int i = 0; i < entrada->get_n_servidores(); i++){
-        cout << entrada->get_capacidade_servidor(i) << " ";
-    }
-    cout << endl;
-    cout << "Ocupacao:   ";
-    for (int i = 0; i < entrada->get_n_servidores(); i++){
-        cout << solucao->ocupacao[i] << " ";
+        cout << entrada->get_capacidade_servidor(i) - solucao->ocupacao[i] << " ";
     }
     cout << endl;
 }
@@ -24,12 +19,14 @@ void print_capacidade_ocupacao(Read_Arquivo* entrada, Solucao* solucao){
 
 
 int main(){
-    Read_Arquivo arq1("teste/n5m15A.txt");
+
+    Read_Arquivo arq1("teste/teste.txt");
     Read_Arquivo arq2("teste/n5m15B.txt");
     Read_Arquivo arq3("teste/n25m5A.txt");
     Read_Arquivo arq4("teste/n30m5A.txt");
     Read_Arquivo arq5("teste/n60m10.txt");
     Read_Arquivo arq6("teste/n60m10A.txt");
+
     
     vector<Read_Arquivo*> arquivos = {&arq1, &arq2, &arq3, &arq4, &arq5, &arq6};
 
@@ -45,12 +42,13 @@ int main(){
 
     //dados.print_matriz();
     for (int i = 0; i < 6; ++i){
-
+        cout << arquivos[i]->nome << endl;
         A_Guloso guloso(arquivos[i]);
         inicio = chrono::system_clock::now();
         guloso.executar();
         fim = chrono::system_clock::now();
         duracao = fim - inicio;
+        cout << "=====Guloso=====" << endl;
         guloso.solucao.print_solucao();
         print_capacidade_ocupacao(arquivos[i], &guloso.solucao);
         Sguloso[i] = guloso.solucao.custo;
@@ -62,7 +60,9 @@ int main(){
         Solucao nova =  vnd.executar();
         fim = chrono::system_clock::now();
         duracao = fim - inicio;
+        cout << "======VND======" << endl;
         nova.print_solucao();
+        nova.criar_arquivo(arquivos[i]->nome);
         print_capacidade_ocupacao(arquivos[i], &nova);
         SVND[i] = nova.custo;
         tempo_VND[i] = duracao.count();

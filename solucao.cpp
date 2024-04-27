@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "solucao.h"
+#include <fstream>
 
 using namespace std;
 
@@ -21,8 +22,38 @@ void Solucao::print_solucao(){
     cout << "Custo Nuvem: " << this->custo_nuvem << endl;
     cout << "Custo Local: " << this->custo_local << endl;
     cout << "Alocacao: ";
-    for (int i = 0; i < int(this->alocacao.size()); i++){
-        cout << this->alocacao[i] << " ";
+    for (int job = 0; job < int(this->alocacao.size()); job++){
+        cout << this->alocacao[job] << " ";
     }
     cout << endl;
+}
+
+
+void Solucao::criar_arquivo(string nome_arquivo){
+    int tam = ocupacao.size();
+    vector<vector<int>> aloc_servs(tam+1);
+
+    ofstream arq_saida;
+    arq_saida.open("saida/" + nome_arquivo);
+
+    arq_saida << this->custo << endl;
+    arq_saida << this->custo_nuvem << endl;
+    arq_saida << this->custo_local << endl;
+
+    for (int job = 0; job < int(this->alocacao.size()); job++){
+        if (this->alocacao[job] == -1){
+            aloc_servs[tam].push_back(job +1);
+        }
+        else{
+            aloc_servs[this->alocacao[job]].push_back(job +1);
+        }
+    }
+    arq_saida << endl;
+    for (int serv = 0; serv < tam+1; serv++){
+        for (int job = 0; job < int(aloc_servs[serv].size()); job++){
+            arq_saida << aloc_servs[serv][job] << " ";
+        }
+        arq_saida << endl;
+    }
+    arq_saida.close();
 }

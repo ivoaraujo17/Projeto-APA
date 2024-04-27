@@ -17,6 +17,7 @@ class Solucao{
         Solucao();
         Solucao(int n_jobs, int n_servidores);
         void print_solucao();
+        void criar_arquivo(string nome_arquivo);
 };
 
 #endif

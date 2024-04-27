@@ -7,6 +7,7 @@ using namespace std;
 
 
 Read_Arquivo::Read_Arquivo(string nome_arquivo){
+    this->nome = nome_arquivo;
     arquivo.open(nome_arquivo);
     if (arquivo.is_open()){
         getline(arquivo, linha);

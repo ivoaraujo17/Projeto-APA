@@ -66,6 +66,31 @@ void main_execute(vector<Read_Arquivo*> arquivos, vector<int> otimos){
     }
 }
 
+void entrar_com_arquivos(){
+    char continuar = 's';
+    //vector<Read_Arquivo*> arquivos;
+    //vector<int> otimos;
+    while(continuar == 's'){
+        continuar = ' ';
+        cout << "Digite o nome do arquivo: " << endl;
+
+
+
+        // aqui o usuario insere o nome do arquivo que vai ser transformado em objeto e adcionado no vetor de arquivos
+
+
+        
+        while (!((continuar == 's') || (continuar == 'n'))){
+            cin.clear();
+            cout << "Deseja adicionar mais uma instancia? (s ou n)" << endl;
+            cin >> continuar;
+            if (!((continuar == 's') || (continuar == 'n'))){ cout << "Caractere invalido!" << endl; }
+        }
+
+    }
+    cout << "executando" << endl;
+    //main_execute(arquivo, otimos);
+}
 
 void arquivos_de_teste(){
     Read_Arquivo arq1("teste/n5m15A.txt");
@@ -84,8 +109,6 @@ void arquivos_de_teste(){
 
 int main(){
     char close = 'f';
-    //vector<Read_Arquivo*> arquivos_teste;
-    //vector<int> otimos;
     int opcao;
     while (close == 'f'){
         cout << "digite 1 para passar enderecos de arquivos" << endl;
@@ -101,7 +124,7 @@ int main(){
             break;
         case 1:
             cout << "entrou" << endl;
-            // entradas de aqrquivos
+            entrar_com_arquivos();
             break;
         case 2:
             arquivos_de_teste();

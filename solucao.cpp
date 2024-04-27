@@ -18,7 +18,7 @@ Solucao::Solucao(int n_jobs, int n_servidores) {
 }
 
 void Solucao::print_solucao(){
-    cout << "Custo: " << this->custo << endl;
+    cout << "Custo Total: " << this->custo << endl;
     cout << "Custo Nuvem: " << this->custo_nuvem << endl;
     cout << "Custo Local: " << this->custo_local << endl;
     cout << "Alocacao: ";

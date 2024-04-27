@@ -6,6 +6,7 @@
 #include "a_guloso.h"
 #include "VND.h"
 #include "solucao.h"
+#include <string>
 
 
 void print_capacidade_ocupacao(Read_Arquivo* entrada, Solucao* solucao){
@@ -68,17 +69,24 @@ void main_execute(vector<Read_Arquivo*> arquivos, vector<int> otimos){
 
 void entrar_com_arquivos(){
     char continuar = 's';
-    //vector<Read_Arquivo*> arquivos;
-    //vector<int> otimos;
+    string nome;
+    int valor;
+    vector<Read_Arquivo*> arquivos;
+    vector<int> otimos;
     while(continuar == 's'){
         continuar = ' ';
-        cout << "Digite o nome do arquivo: " << endl;
+        cout << "Digite o nome da instancia: " << endl;
+        cin >> nome;
+        Read_Arquivo arq(nome);
+        cout << "Digite o valor otimo da instacia: " << endl;
+        cin >> valor;
 
-
+        arquivos.push_back(&arq);
+        otimos.push_back(valor);
 
         // aqui o usuario insere o nome do arquivo que vai ser transformado em objeto e adcionado no vetor de arquivos
 
-
+        main_execute(arquivos, otimos);
         
         while (!((continuar == 's') || (continuar == 'n'))){
             cin.clear();

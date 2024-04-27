@@ -20,7 +20,7 @@ void print_capacidade_ocupacao(Read_Arquivo* entrada, Solucao* solucao){
 
 int main(){
 
-    Read_Arquivo arq1("teste/teste.txt");
+    Read_Arquivo arq1("teste/n5m15A.txt");
     Read_Arquivo arq2("teste/n5m15B.txt");
     Read_Arquivo arq3("teste/n25m5A.txt");
     Read_Arquivo arq4("teste/n30m5A.txt");
@@ -38,7 +38,7 @@ int main(){
     float tempo_guloso[6];
     float tempo_VND[6];
     chrono::time_point<chrono::system_clock> inicio, fim;
-    chrono::duration<float> duracao;
+    chrono::duration<float, milli> duracao;
 
     //dados.print_matriz();
     for (int i = 0; i < 6; ++i){

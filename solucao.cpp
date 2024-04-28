@@ -34,7 +34,10 @@ void Solucao::criar_arquivo(string nome_arquivo){
     vector<vector<int>> aloc_servs(tam+1);
 
     ofstream arq_saida;
-    arq_saida.open("saida/" + nome_arquivo);
+
+    string nome_arq = nome_arquivo.substr(nome_arquivo.find_last_of("/") + 1);
+
+    arq_saida.open("saida/" + nome_arq);
 
     arq_saida << this->custo << endl;
     arq_saida << this->custo_nuvem << endl;

@@ -14,7 +14,6 @@ A_Guloso::A_Guloso(Read_Arquivo* dados){
 }
 
 void A_Guloso::executar(){
-
     int n_jobs = dados->get_n_jobs();
 
     // Ordena usando o sort atraves do job.tempo

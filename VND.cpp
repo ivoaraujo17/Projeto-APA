@@ -15,11 +15,10 @@ VND::VND(Solucao* solucao_gulosa, Read_Arquivo* dados) {
 
 Solucao VND::executar() {
     int k = 1;
-    while (k < 4){
+    while (k <= 3){
         if (k == 1){
-            Solucao s = this->swap_local();
-            if (s.custo < this->solucao_atual.custo){
-                this->solucao_atual = s;
+            bool resultado = this->swap_local();
+            if (resultado){
                 k = 1;
                 continue;
             }
@@ -29,9 +28,8 @@ Solucao VND::executar() {
             }
         }
         else if (k == 3){
-            Solucao s = this->reinsertion();
-            if (s.custo < this->solucao_atual.custo){
-                this->solucao_atual = s;
+            bool resultado = this->reinsertion();
+            if (resultado){
                 k = 1;
                 continue;
             }
@@ -41,9 +39,8 @@ Solucao VND::executar() {
             }
         }
         else if (k == 2){
-            Solucao s = this->swap();
-            if (s.custo < this->solucao_atual.custo){
-                this->solucao_atual = s;
+            bool resultado = this->swap();
+            if (resultado){
                 k = 1;
                 continue;
             }
@@ -57,7 +54,7 @@ Solucao VND::executar() {
     return this->solucao_atual;
 }
 
-Solucao VND::swap(){
+bool VND::swap(){
 
     struct swap{
         int job1;
@@ -138,20 +135,21 @@ Solucao VND::swap(){
             }
         }
     }
-    Solucao nova_solucao = this->solucao_atual;
     if (melhor_swap.novo_custo < this->solucao_atual.custo){
-        nova_solucao.custo = melhor_swap.novo_custo;
-        nova_solucao.custo_nuvem = melhor_swap.custo_nuvem;
-        nova_solucao.custo_local = melhor_swap.custo_local;
-        nova_solucao.alocacao[melhor_swap.job1] = melhor_swap.novo_server_j1;
-        nova_solucao.alocacao[melhor_swap.job2] = melhor_swap.novo_server_j2;
-        nova_solucao.ocupacao[melhor_swap.novo_server_j1] = melhor_swap.ocup_server_j1;
-        nova_solucao.ocupacao[melhor_swap.novo_server_j2] = melhor_swap.ocup_server_j2;
+        this->solucao_atual.custo = melhor_swap.novo_custo;
+        this->solucao_atual.custo_nuvem = melhor_swap.custo_nuvem;
+        this->solucao_atual.custo_local = melhor_swap.custo_local;
+        this->solucao_atual.alocacao[melhor_swap.job1] = melhor_swap.novo_server_j1;
+        this->solucao_atual.alocacao[melhor_swap.job2] = melhor_swap.novo_server_j2;
+        this->solucao_atual.ocupacao[melhor_swap.novo_server_j1] = melhor_swap.ocup_server_j1;
+        this->solucao_atual.ocupacao[melhor_swap.novo_server_j2] = melhor_swap.ocup_server_j2;
+        return true;
     }
-    return nova_solucao;
+    return false;
+    
 }
 
-Solucao VND::swap_local(){
+bool VND::swap_local(){
 
     struct swap{
         int job1;
@@ -268,24 +266,24 @@ Solucao VND::swap_local(){
             
         }
     }
-    Solucao nova_solucao = this->solucao_atual;
     if (melhor_swap.novo_custo < this->solucao_atual.custo){
-        nova_solucao.custo = melhor_swap.novo_custo;
-        nova_solucao.custo_nuvem = melhor_swap.custo_nuvem;
-        nova_solucao.custo_local = melhor_swap.custo_local;
-        nova_solucao.alocacao[melhor_swap.job1] = melhor_swap.novo_server_j1;
-        nova_solucao.alocacao[melhor_swap.job2] = melhor_swap.novo_server_j2;
+        this->solucao_atual.custo = melhor_swap.novo_custo;
+        this->solucao_atual.custo_nuvem = melhor_swap.custo_nuvem;
+        this->solucao_atual.custo_local = melhor_swap.custo_local;
+        this->solucao_atual.alocacao[melhor_swap.job1] = melhor_swap.novo_server_j1;
+        this->solucao_atual.alocacao[melhor_swap.job2] = melhor_swap.novo_server_j2;
         if (melhor_swap.novo_server_j1 != -1){
-            nova_solucao.ocupacao[melhor_swap.novo_server_j1] = melhor_swap.ocup_server_j1;
+            this->solucao_atual.ocupacao[melhor_swap.novo_server_j1] = melhor_swap.ocup_server_j1;
         }
         if (melhor_swap.novo_server_j2 != -1){
-            nova_solucao.ocupacao[melhor_swap.novo_server_j2] = melhor_swap.ocup_server_j2;
+            this->solucao_atual.ocupacao[melhor_swap.novo_server_j2] = melhor_swap.ocup_server_j2;
         }
+        return true;
     }
-    return nova_solucao;
+    return false;
 }
 
-Solucao VND::reinsertion(){
+bool VND::reinsertion(){
 
     struct reinsertion{
         int job = -1;
@@ -343,24 +341,22 @@ Solucao VND::reinsertion(){
             }
         }
     }
-    //cout << "finalizou busca\n";
-    Solucao nova_solucao = this->solucao_atual;
     if (melhor_reinsertion.novo_custo < this->solucao_atual.custo){
         // reduz a capacidade do servidor antigo
         int job = melhor_reinsertion.job;
         int servidor = melhor_reinsertion.servidor;
-        int servidor_antigo = nova_solucao.alocacao[job];
+        int servidor_antigo = this->solucao_atual.alocacao[job];
         if (servidor_antigo != -1){
-            nova_solucao.ocupacao[servidor_antigo] -= this->dados->get_tempo_job_servidor(job, servidor_antigo);
+            this->solucao_atual.ocupacao[servidor_antigo] -= this->dados->get_tempo_job_servidor(job, servidor_antigo);
         }
         // atualiza a nova solução
-        nova_solucao.alocacao[job] = servidor;
-        nova_solucao.ocupacao[servidor] += this->dados->get_tempo_job_servidor(job, servidor);
+        this->solucao_atual.alocacao[job] = servidor;
+        this->solucao_atual.ocupacao[servidor] += this->dados->get_tempo_job_servidor(job, servidor);
         // atualiza o custo
-        nova_solucao.custo = melhor_reinsertion.novo_custo;
-        nova_solucao.custo_nuvem = melhor_reinsertion.custo_nuvem;
-        nova_solucao.custo_local = melhor_reinsertion.custo_local;
-        return nova_solucao;
+        this->solucao_atual.custo = melhor_reinsertion.novo_custo;
+        this->solucao_atual.custo_nuvem = melhor_reinsertion.custo_nuvem;
+        this->solucao_atual.custo_local = melhor_reinsertion.custo_local;
+        return true;
     }
-    return this->solucao_atual;
+    return false;
 }

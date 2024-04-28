@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include "read_arquivo.h"
 
 using namespace std;
@@ -25,48 +26,28 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
 
         // leitura do vetor de capacidade dos servidores
         getline(arquivo, linha);
-        string aux = "";
+        stringstream ss(linha);
+        string aux;
         int pos_servidor = 0;
-        int maior_capacidade = 0;
-        for (int c=0; c < int(linha.size()); c++){
-            if (linha[c] == ' ' and aux != ""){
-                this->capacidade_servidores[pos_servidor] = stoi(aux);
-                pos_servidor++;
-                if (stoi(aux) > maior_capacidade){
-                    maior_capacidade = stoi(aux);
-                }
-                aux = "";
-            }
-            else if(linha[c] != ' '){
-                aux += linha[c];
-            }
+        while (ss >> aux) {
+            this->capacidade_servidores[pos_servidor] = stoi(aux);
+            pos_servidor++;
         }
-        
-        this->capacidade_servidores[pos_servidor] = stoi(aux);
         
 
         getline(arquivo, linha); // pega a linha em branco
         // leitura da matriz de tempo de processamento
         for (int i = 0; i < this->n_servidores; i++){
             getline(arquivo, linha);
-            string aux = "";
+            stringstream ss(linha);
+            string aux;
             int coluna = 0;
-            for (int c=0; c < int(linha.size()); c++){
-                if (linha[c] == ' ' and aux != ""){
-                    this->jobs[i][coluna].tempo = stoi(aux);
-                    this->jobs[i][coluna].servidor = i;
-                    this->jobs[i][coluna].id = coluna;
-                    coluna++;
-                    aux = "";
-                    
-                }
-                else if(linha[c] != ' '){
-                    aux += linha[c];
-                }
+            while (ss >> aux) {
+                this->jobs[i][coluna].tempo = stoi(aux);
+                this->jobs[i][coluna].servidor = i;
+                this->jobs[i][coluna].id = coluna;
+                coluna++;
             }
-            this->jobs[i][coluna].tempo = stoi(aux); 
-            this->jobs[i][coluna].servidor = i;
-            this->jobs[i][coluna].id = coluna;
         }
 
         getline(arquivo, linha); // pega a linha em branco
@@ -74,23 +55,15 @@ Read_Arquivo::Read_Arquivo(string nome_arquivo){
         // leitura da matriz de custo
         for (int i = 0; i < this->n_servidores; i++){
             getline(arquivo, linha);
-            string aux = "";
+            stringstream ss(linha);
+            string aux;
             int coluna = 0;
-            for (int c=0; c < int(linha.size()); c++){
-                if (linha[c] == ' '){
-                    this->jobs[i][coluna].custo = stoi(aux);
-                    this->jobs[i][coluna].ct = this->jobs[i][coluna].tempo * this->jobs[i][coluna].custo;
-                    this->jobs_total[i*this->n_jobs + coluna] = this->jobs[i][coluna];
-                    coluna++;
-                    aux = "";
-                }
-                else{
-                    aux += linha[c];
-                }
-            }
+            while (ss >> aux) {
             this->jobs[i][coluna].custo = stoi(aux);
             this->jobs[i][coluna].ct = this->jobs[i][coluna].tempo * this->jobs[i][coluna].custo;
             this->jobs_total[i*this->n_jobs + coluna] = this->jobs[i][coluna];
+            coluna++;
+            }
         }
     }
     else{

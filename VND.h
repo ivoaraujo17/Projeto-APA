@@ -16,9 +16,9 @@ class VND {
     public:
         VND(Solucao* solucao, Read_Arquivo* dados);
         Solucao executar();
-        Solucao swap();
-        Solucao reinsertion();
-        Solucao swap_local();
+        bool swap();
+        bool reinsertion();
+        bool swap_local();
 };
 
 

@@ -25,17 +25,16 @@ void main_execute(vector<Read_Arquivo*> arquivos, vector<int> otimos){
     float GAP_VND[tam];
     float tempo_guloso[tam];
     float tempo_VND[tam];
-    chrono::time_point<chrono::system_clock> inicio, fim;
+    chrono::high_resolution_clock::time_point inicio, fim;
     chrono::duration<float, milli> duracao;
 
-    //dados.print_matriz();
     for (int i = 0; i < tam; ++i){
-        cout << arquivos[i]->nome << endl;
+        cout << "\nArquivo: " << arquivos[i]->nome << endl;
         A_Guloso guloso(arquivos[i]);
-        inicio = chrono::system_clock::now();
+        inicio = chrono::high_resolution_clock::now();
         guloso.executar();
-        fim = chrono::system_clock::now();
-        duracao = fim - inicio;
+        fim = chrono::high_resolution_clock::now();
+        duracao = std::chrono::duration_cast<std::chrono::duration<float, milli>>(fim - inicio);
         cout << "=====Guloso=====" << endl;
         guloso.solucao.print_solucao();
         print_capacidade_ocupacao(arquivos[i], &guloso.solucao);
@@ -44,10 +43,10 @@ void main_execute(vector<Read_Arquivo*> arquivos, vector<int> otimos){
         GAP_guloso[i] = ((static_cast<float>(guloso.solucao.custo) - otimos[i]) / otimos[i]) * 100.0f;
 
         VND vnd(&guloso.solucao, arquivos[i]);
-        inicio = chrono::system_clock::now();
+        inicio = chrono::high_resolution_clock::now();
         Solucao nova =  vnd.executar();
-        fim = chrono::system_clock::now();
-        duracao = fim - inicio;
+        fim = chrono::high_resolution_clock::now();
+        duracao = std::chrono::duration_cast<std::chrono::duration<float, milli>>(fim - inicio);
         cout << "======VND======" << endl;
         nova.print_solucao();
         nova.criar_arquivo(arquivos[i]->nome);
@@ -61,8 +60,8 @@ void main_execute(vector<Read_Arquivo*> arquivos, vector<int> otimos){
 
     cout << "Otimo " << setw(10) << " Solucao_Guloso " << setw(10) << " Tempo_Guloso " << setw(10) << " GAP_Guloso " << setw(10) << " Solucao_VND " << setw(10) << " Tempo_VND " << setw(10) <<  " GAP_VND " << endl;
     for (int i = 0; i < tam; ++i){
-        cout << otimos[i] <<  setw(5) << " | " << setw(8) << Sguloso[i] << setw(8) << " | " << setw(8) << tempo_guloso[i] << setw(5) << " | ";
-        cout << setw(8) << GAP_guloso[i] << setw(5) << " | " << setw(8) << SVND[i] << setw(5) << " | " << setw(8) << tempo_VND[i] << setw(3) << " | ";
+        cout << otimos[i] <<  setw(5) << " | " << setw(8) << fixed << setprecision(5) << Sguloso[i] << setw(8) << " | " << setw(8) << fixed << setprecision(5) << tempo_guloso[i] << setw(5) << " | ";
+        cout << setw(8) << GAP_guloso[i] << setw(5) << " | " << setw(8) << SVND[i] << setw(5) << " | " << setw(8) << fixed << setprecision(5) << tempo_VND[i] << setw(3) << " | ";
         cout << setw(8) << GAP_VND[i] << endl; 
     }
 }
@@ -122,7 +121,7 @@ int main(){
     char close = 'f';
     int opcao;
     while (close == 'f'){
-        cout << "digite 1 para passar enderecos de arquivos" << endl;
+        cout << "\ndigite 1 para passar enderecos de arquivos" << endl;
         cout << "digite 2 para usar as instancias de teste" << endl;
         cout << "digite 0 para fechar o programa" << endl;
         scanf("%i", &opcao);
@@ -131,10 +130,9 @@ int main(){
         {
         case 0:
             close = 'T';
-            cout << "Programa terminado" << endl;
+            cout << "\nPrograma terminado" << endl;
             break;
         case 1:
-            cout << "entrou" << endl;
             entrar_com_arquivos();
             break;
         case 2:
@@ -145,7 +143,5 @@ int main(){
             break;
         }
     }
-
-    
     return 0;
 }

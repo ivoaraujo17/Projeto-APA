@@ -89,14 +89,17 @@ void entrar_com_arquivos(){
         main_execute(arquivos, otimos);
         
         while (!((continuar == 's') || (continuar == 'n'))){
+            cout << endl;
             cin.clear();
             cout << "Deseja adicionar mais uma instancia? (s ou n)" << endl;
             cin >> continuar;
             if (!((continuar == 's') || (continuar == 'n'))){ cout << "Caractere invalido!" << endl; }
         }
+        arquivos.clear();
+        otimos.clear();
 
     }
-    cout << "executando" << endl;
+    //cout << "executando" << endl;
     //main_execute(arquivo, otimos);
 }
 

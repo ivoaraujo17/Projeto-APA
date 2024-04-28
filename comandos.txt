@@ -1,0 +1,5 @@
+# compilar
+make
+
+# executar
+.\main.exe

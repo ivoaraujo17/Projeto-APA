@@ -1,5 +1,0 @@
-# compilar
-mingw32-make -f Makefile.make
-
-# executar
-.\output\main.exe
